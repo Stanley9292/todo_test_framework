@@ -1,0 +1,27 @@
+[project]
+name = "todomvc-playwright-pom"
+version = "0.1.0"
+description = "Playwright POM test framework for the TodoMVC demo application"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Test Automation" }
+]
+dependencies = [
+    "playwright (==1.62.0)",
+    "pytest (==9.1.1)",
+    "pytest-playwright (==0.9.0)",
+    "pytest-base-url (==2.1.0)",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --browser chromium"
+

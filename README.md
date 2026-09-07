@@ -1,21 +1,22 @@
 # TodoMVC Playwright POM Test Framework
 
 Automated UI tests for the [TodoMVC demo application](https://demo.playwright.dev/todomvc/#/)
-built with **Playwright**, **pytest**, and the **Page Object Model (POM)** pattern.
+built with **Playwright**, **pytest**, and the **Page Object Model POM)** pattern.
+Dependencies are managed with **[Poetry](https://python-poetry.org/)**.
 
 ## Project structure
 
 ```
 test_ai/
-├── conftest.py            # Pytest fixtures (provides a ready TodoPage)
-├── pages/
-│   ├── base_page.py       # Base page object with shared functionality
-│   └── todo_page.py       # Page object for the TodoMVC application
-├── tests/
-│   └── test_todo.py       # Test suite (add / complete / delete / filters)
-├── pytest.ini             # Pytest configuration
-├── requirements.txt       # Python dependencies
-└── README.md
+✔—— conftest.py            # Pytest fixtures (provides a ready TodoPage)
+├—— pages/
+✔—— │—— base_page.py       # Base page object with shared functionality
+✔—— └—— todo_page.py       # Page object for the TodoMVC application
+✔—— tests/
+├—— └—— test_todo.py       # Test suite (add / complete / delete / filters)
+✔—— pyproject.toml         # Poetry dependencies + pytest configuration
+✔—— poetry.lock            # Locked dependency versions
+├—— README.md
 ```
 
 ## Covered scenarios
@@ -28,58 +29,78 @@ test_ai/
 - "Active" filter shows only uncompleted items
 - "Completed" filter shows only completed items
 
+## Prerequisites
+
+- **Python 3.10+**
+- **Poetry** — install it if you don't have it:
+
+  Installation for any platform:
+  ```bash
+  pip install poetry
+  ```
+
 ## Setup
 
-1. Create and activate a virtual environment (optional but recommended):
+From the project root, install dependencies (Poetry creates a virtual environment
+automatically):
 
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   ```
+```bash
+poetry install
+```
 
-2. Install dependencies:
+Install the Playwright browser binaries:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+poetry run playwright install chromium
+```
 
-3. Install the Playwright browsers:
-
-   ```bash
-   playwright install chromium
-   ```
+> On Linux, if you hit missing system library errors, run
+> `sudo poetry run playwright install --with-deps chromium` (or install the
+> dependencies manually with `playwright install-deps`).
 
 ## Running the tests
 
 Run the whole suite (headless Chromium by default):
 
 ```bash
-pytest
+poetry run pytest
 ```
 
-Run with a visible browser window:
+Run with a visible browser window (headed mode):
 
 ```bash
-pytest --headed
+poetry run pytest --headed
+```
+
+Slow down actions to follow them visually:
+
+```bash
+poetry run pytest --headed --slowmo 500
 ```
 
 Run a specific test file or test:
 
 ```bash
-pytest tests/test_todo.py
-pytest tests/test_todo.py::TestFilters
+poetry run pytest tests/test_todo.py
+poetry run pytest tests/test_todo.py::TestFilters
 ```
 
-Run on a different browser:
+Run on a different browser (install it first with `poetry run playwright install <browser>`):
 
 ```bash
-pytest --browser firefox
-pytest --browser webkit
+poetry run pytest --browser firefox
+poetry run pytest --browser webkit
 ```
 
-Generate an HTML report of a failing run (traces/screenshots via pytest-playwright):
+Collect traces, screenshots, and videos (useful for debugging failures):
 
 ```bash
-pytest --tracing on --screenshot on --video on
+poetry run pytest --tracing on --screenshot on --video on
 ```
 
+> **Tip:** instead of prefixing every command with `poetry run`, you can activate
+> the Poetry-managed virtual environment first:
+> - Linux / macOS: `eval $(poetry env activate)` or `source $(poetry env info --path)/bin/activate`
+> - Windows (PowerShell): `Invoke-Expression (poetry env activate)`
+>
+> Then just run `pytest`, `playwright`, etc. directly.
